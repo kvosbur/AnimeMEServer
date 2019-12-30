@@ -10,4 +10,5 @@ class User(db.Model):
     username = db.Column(db.String(255), nullable=False)
     sessionToken = db.Column(db.String(200), nullable=True)
     password = db.Column(db.String(200), nullable=False)
+    adminType = db.Column(db.Integer, nullable=False)
     playlists = db.relationship("Playlist", backref="user", cascade="all, delete-orphan")

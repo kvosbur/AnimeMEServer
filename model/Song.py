@@ -8,6 +8,7 @@ class Song(db.Model):
     songID = db.Column(db.Integer, primary_key=True)
     songNameEN = db.Column(db.String(200), nullable=False)
     songNameJP = db.Column(db.String(200), nullable=False)
+    songArtist = db.Column(db.String(200), nullable=False)
     songType = db.Column(db.Integer, nullable=False)
     songTypeValue = db.Column(db.Integer, nullable=True)
     animeID = db.Column(db.Integer, db.ForeignKey('anime.animeID'))
