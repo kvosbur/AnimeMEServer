@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# ignore the migrations folder
+migrations/
+
+# ignore pychar .idea folder
+.idea/
