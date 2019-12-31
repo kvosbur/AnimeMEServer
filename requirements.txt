@@ -5,3 +5,4 @@ flask-restplus==0.13.0
 Flask-SQLAlchemy==2.4.0
 Flask-Testing==0.7.1
 python-dotenv==0.10.3
+validate_email==1.3
