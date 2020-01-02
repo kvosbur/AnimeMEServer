@@ -9,4 +9,4 @@ class Playlist(db.Model):
     playlistName = db.Column(db.String(255), nullable=False)
     createdDate = db.Column(db.DateTime(), nullable=False)
     userID = db.Column(db.Integer, db.ForeignKey('user.userID'))
-    songs = db.relationship("PlaylistSong", backref="playlist", cascade="all, delete-orphan")
+    # songs = db.relationship("PlaylistSong", backref="playlist", cascade="all, delete-orphan")

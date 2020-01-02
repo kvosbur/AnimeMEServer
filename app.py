@@ -1,6 +1,9 @@
 
 from dotenv import load_dotenv
 import os
+import click
+import sys
+import pytest
 from flask import Flask
 from flask_migrate import Migrate
 from util import FileHandler
@@ -28,6 +31,17 @@ from model import Requests
 from model import Song
 from model import User
 
+
+@app.cli.command()
+@click.argument('testname', required=False)
+def test(testname):
+    if testname is None:
+        returnVal = pytest.main(
+            ['-W', 'ignore::DeprecationWarning', '--cov', '--cov-config=./.coveragec', '--rootdir', './tests'])
+        sys.exit(returnVal)
+    else:
+        returnVal = pytest.main(['-W', 'ignore::DeprecationWarning', './tests/test_{}.py'.format(testname)])
+        sys.exit(returnVal)
 
 
 if __name__ == "__main__":
