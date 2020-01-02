@@ -1,4 +1,4 @@
-from app import db
+from model import db
 
 TABLE_NAME = "user"
 
@@ -11,4 +11,4 @@ class User(db.Model):
     sessionToken = db.Column(db.String(200), nullable=True)
     password = db.Column(db.String(200), nullable=False)
     adminType = db.Column(db.Integer, nullable=False)
-    playlists = db.relationship("Playlist", backref="user", cascade="all, delete-orphan")
+    # playlists = db.relationship("Playlist", backref="user", cascade="all, delete-orphan")
