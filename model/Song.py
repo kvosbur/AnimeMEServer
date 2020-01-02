@@ -1,4 +1,4 @@
-from app import db
+from model import db
 
 TABLE_NAME = "song"
 
