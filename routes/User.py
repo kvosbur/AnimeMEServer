@@ -3,14 +3,20 @@ from flask_restplus import Resource, reqparse, Namespace, fields
 from validation.UserValidation import UserValidation
 from handlers.UserHandler import UserHandler
 from util.HTTPResponse import HTTPResponse
+from .Auth import auth_required
 
 user = Namespace('user', description='User info page')
 
-authResponseModel = user.model("AuthOnly", {"authCode": fields.String(example="BCtiAMdQe0AXlj3sKD22xDquFI2njzRb2BjWy9ISpI6xkCHqINhZUQIv0Pk6ZYNNlvV9wXpXMWc611LeERnXrTT9HnWb5Ivz0XiX5Zp1PYopUQ16NIRTezGo76c9lzll"),
+authResponseModel = user.model("Auth", {"authCode": fields.String(example="BCtiAMdQe0AXlj3sKD22xDquFI2njzRb2BjWy9ISpI6xkCHqINhZUQIv0Pk6ZYNNlvV9wXpXMWc611LeERnXrTT9HnWb5Ivz0XiX5Zp1PYopUQ16NIRTezGo76c9lzll"),
                                                 "adminType": fields.Integer(example=0)})
 authFullResponseModel = user.model("AuthResponse", {"message": fields.String(example="OK"),
                                     "statusCode": fields.Integer(example=0),
                                     "data": fields.Nested(authResponseModel)})
+
+adminResponseModel = user.model("Admin", {"adminType": fields.Integer(example=0)})
+adminFullResponseModel = user.model("AdminResponse", {"message": fields.String(example="OK"),
+                                    "statusCode": fields.Integer(example=0),
+                                    "data": fields.Nested(adminResponseModel)})
 
 @user.route("/register")
 class UserRegister(Resource):
@@ -71,3 +77,12 @@ class UserLoginWithoutAuth(Resource):
             return HTTPResponse.makeResponse(418, value, errorCode, "")
 
         return HTTPResponse.makeResponse(200, "OK", 0, value)
+
+
+@user.route("/loginWithAuth")
+class UserLoginWithAuth(Resource):
+
+    @user.response(200, "Successful Login", adminFullResponseModel)
+    @auth_required
+    def post(self, userObj):
+        return HTTPResponse.makeResponse(200, "OK", 0, {"adminType": userObj.adminType})

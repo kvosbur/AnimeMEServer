@@ -6,6 +6,7 @@ from parameterized import parameterized
 USEAUTHCODE = "ROAMGdIz6K8zRiWYMQFZyxfMd4u96dqobs5eiAF1DuYTnANEfNJnu5vuvGGzN2aCeIe4sUdTPpqsBlEQYmuTUr7RV4nFk81po4QPEry4YeQVQtOnqy58zzFbnmub7s5B"
 USEPASSWORD = "pass"
 
+
 class UserBaseTestCase(BaseTestCase):
     def setUp(self):
         db.create_all()
