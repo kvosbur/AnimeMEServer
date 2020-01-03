@@ -1,8 +1,8 @@
 
 from functools import wraps
-from flask import request
 from model.User import User
 from flask_restplus import reqparse, Namespace
+from handlers.UserHandler import UserHandler
 
 auth = Namespace('auth', description='User info page')
 
@@ -18,12 +18,11 @@ def auth_required(function):
     @auth.expect(auth_parser)
     @wraps(function)
     def decorated(*args, **kwargs):
+        headers = auth_parser.parse_args()
+        sessionToken = headers["authCode"]
 
-        sessionToken = request.headers.get('authCode', None)
-        if sessionToken is None:
-            return {"message": "missing 'authCode' in header"}, 401
-
-        user = User.query.filter_by(sessionToken=sessionToken).first()
+        authHash = UserHandler.generateHash(sessionToken)
+        user = User.query.filter_by(sessionToken=authHash).first()
         if user is None:
             return {"message": "invalid 'authCode' in header"}, 401
 

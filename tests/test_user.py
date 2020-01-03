@@ -202,7 +202,7 @@ class TestUserLogin(UserBaseTestCase):
             userAfter = db.session.query(User).filter_by(username="AwesomeSauce").first()
             assert userAfter.sessionToken == originalAuth
 
-    def test_correct_login(self):
+    def test_correct_login_without_auth(self):
         payload = {'username': "AwesomeSauce",
                    'password': USEPASSWORD,
                    }
@@ -228,3 +228,71 @@ class TestUserLogin(UserBaseTestCase):
             assert userAfter.sessionToken != originalAuth
             # check that correct value is stored as altered authCode
             assert authHash == userAfter.sessionToken
+
+
+class TestUserLoginWithAuth(UserBaseTestCase):
+
+    def test_empty_auth_code(self):
+        payload = {}
+        headers = {}
+
+        userObj = db.session.query(User).filter_by(username="AwesomeSauce").first()
+        originalAuth = userObj.sessionToken
+
+        with self.client:
+            response = self.client.post(
+                "user/loginWithAuth",
+                data=payload,
+                headers=headers
+            )
+            assert response.status_code == 400
+            assert response.json == {'errors': {'authCode': 'Missing required parameter in the HTTP headers'},
+                                        'message': 'Input payload validation failed'}
+
+            userAfter = db.session.query(User).filter_by(username="AwesomeSauce").first()
+            # check that authCode has not been altered
+            assert userAfter.sessionToken == originalAuth
+
+    def test_invalid_auth_code(self):
+        payload = {}
+        headers = {"authCode": "incorrect"}
+
+        userObj = db.session.query(User).filter_by(username="AwesomeSauce").first()
+        originalAuth = userObj.sessionToken
+
+        with self.client:
+            response = self.client.post(
+                "user/loginWithAuth",
+                data=payload,
+                headers=headers
+            )
+            assert response.status_code == 401
+            assert response.json == {'message': "invalid 'authCode' in header"}
+
+            userAfter = db.session.query(User).filter_by(username="AwesomeSauce").first()
+            # check that authCode has not been altered
+            assert userAfter.sessionToken == originalAuth
+
+    def test_correct_login_with_auth(self):
+        payload = {}
+
+        headers = {"authCode": USEAUTHCODE}
+
+        userObj = db.session.query(User).filter_by(username="AwesomeSauce").first()
+        originalAuth = userObj.sessionToken
+
+        with self.client:
+            response = self.client.post(
+                "user/loginWithAuth",
+                data=payload,
+                headers=headers
+            )
+            assert response.status_code == 200
+            assert response.json["message"] == "OK"
+            assert response.json["statusCode"] == 0
+            assert response.json["data"]["adminType"] == 0
+
+            userAfter = db.session.query(User).filter_by(username="AwesomeSauce").first()
+            # check that authCode has not been altered
+            assert userAfter.sessionToken == originalAuth
+
