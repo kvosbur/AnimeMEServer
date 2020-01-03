@@ -84,5 +84,5 @@ class UserLoginWithAuth(Resource):
 
     @user.response(200, "Successful Login", adminFullResponseModel)
     @auth_required
-    def post(self, userObj):
+    def get(self, userObj):
         return HTTPResponse.makeResponse(200, "OK", 0, {"adminType": userObj.adminType})

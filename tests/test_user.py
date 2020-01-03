@@ -233,16 +233,14 @@ class TestUserLogin(UserBaseTestCase):
 class TestUserLoginWithAuth(UserBaseTestCase):
 
     def test_empty_auth_code(self):
-        payload = {}
         headers = {}
 
         userObj = db.session.query(User).filter_by(username="AwesomeSauce").first()
         originalAuth = userObj.sessionToken
 
         with self.client:
-            response = self.client.post(
+            response = self.client.get(
                 "user/loginWithAuth",
-                data=payload,
                 headers=headers
             )
             assert response.status_code == 400
@@ -254,16 +252,14 @@ class TestUserLoginWithAuth(UserBaseTestCase):
             assert userAfter.sessionToken == originalAuth
 
     def test_invalid_auth_code(self):
-        payload = {}
         headers = {"authCode": "incorrect"}
 
         userObj = db.session.query(User).filter_by(username="AwesomeSauce").first()
         originalAuth = userObj.sessionToken
 
         with self.client:
-            response = self.client.post(
+            response = self.client.get(
                 "user/loginWithAuth",
-                data=payload,
                 headers=headers
             )
             assert response.status_code == 401
@@ -274,7 +270,6 @@ class TestUserLoginWithAuth(UserBaseTestCase):
             assert userAfter.sessionToken == originalAuth
 
     def test_correct_login_with_auth(self):
-        payload = {}
 
         headers = {"authCode": USEAUTHCODE}
 
@@ -282,9 +277,8 @@ class TestUserLoginWithAuth(UserBaseTestCase):
         originalAuth = userObj.sessionToken
 
         with self.client:
-            response = self.client.post(
+            response = self.client.get(
                 "user/loginWithAuth",
-                data=payload,
                 headers=headers
             )
             assert response.status_code == 200
