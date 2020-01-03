@@ -27,6 +27,9 @@ class UserValidation:
     @staticmethod
     def validateUserNameUniqueness(username):
         """Validates whether this is the first time the user name is being used or not"""
+        if len(username) == 0:
+            return 6, "Username must be non-empty"
+
         isFound = db.session.query(User).filter_by(username=username).first()
         if isFound is not None:
             return 4, "UserName is already being used"

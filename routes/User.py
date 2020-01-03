@@ -39,4 +39,27 @@ class UserRegister(Resource):
         # create a new user account
         authToRet = UserHandler.registerNewUser(email, username, password)
 
-        return HTTPResponse.makeResponse(200, "OK", 0, {"authCode":authToRet})
+        return HTTPResponse.makeResponse(200, "OK", 0, {"authCode": authToRet})
+
+
+@user.route("/login")
+class UserLoginWithoutAuth(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('username', type=str, location='form', required=True)
+    parser.add_argument('password', type=str, location='form', required=True)
+
+    def post(self):
+        arguments = self.parser.parse_args()
+        username = arguments["username"]
+        password = arguments["password"]
+
+        # validate input
+
+        # Input did not pass input validation
+        if errorCode != 0:
+            return HTTPResponse.makeResponse(418, errMsg, errorCode, "")
+
+        # create a new user account
+        authToRet = UserHandler.registerNewUser(email, username, password)
+
+        return HTTPResponse.makeResponse(200, "OK", 0, {"authCode": authToRet})

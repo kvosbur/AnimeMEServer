@@ -102,6 +102,23 @@ class TestUserRegistration(UserBaseTestCase):
             userCreated = db.session.query(User).filter_by(username=payload["username"]).first()
             assert userCreated is None
 
+    def test_username_is_empty(self):
+        payload = {'email': "unique@a.com",
+                   'username': "",
+                   'password': "pass",
+                   }
+
+        with self.client:
+            response = self.client.post(
+                "user/register",
+                data=payload
+            )
+            assert response.status_code == 418
+            assert response.json == {'message': 'Username must be non-empty', 'statusCode': 6, 'data': ''}
+
+            userCreated = db.session.query(User).filter_by(username=payload["email"]).first()
+            assert userCreated is None
+
     def test_correct(self):
         payload = {'email': "unique@a.com",
                    'username': "WayDifferent",
