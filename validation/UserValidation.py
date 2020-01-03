@@ -25,11 +25,16 @@ class UserValidation:
             return 0, ""
 
     @staticmethod
-    def validateUserNameUniqueness(username):
-        """Validates whether this is the first time the user name is being used or not"""
+    def validateUsername(username):
+        """Validates whether the username is non-empty"""
         if len(username) == 0:
             return 6, "Username must be non-empty"
+        else:
+            return 0, ""
 
+    @staticmethod
+    def validateUserNameUniqueness(username):
+        """Validates whether this is the first time the user name is being used or not"""
         isFound = db.session.query(User).filter_by(username=username).first()
         if isFound is not None:
             return 4, "UserName is already being used"
@@ -44,7 +49,6 @@ class UserValidation:
         else:
             return 0, ""
 
-
     @staticmethod
     def validateRegistration(email, username, password):
         # valid email correctness
@@ -57,8 +61,27 @@ class UserValidation:
         if errorCode != 0:
             return errorCode, err_msg
 
+        # validate username is non-empty
+        errorCode, err_msg = UserValidation.validateUsername(username)
+        if errorCode != 0:
+            return errorCode, err_msg
+
         # validate username uniqueness
         errorCode, err_msg = UserValidation.validateUserNameUniqueness(username)
+        if errorCode != 0:
+            return errorCode, err_msg
+
+        # validate that the password is non-empty
+        errorCode, err_msg = UserValidation.validatePasswordNonEmpty(password)
+        if errorCode != 0:
+            return errorCode, err_msg
+
+        return 0, ""
+
+    @staticmethod
+    def validateLogin(username, password):
+        # validate username is non-empty
+        errorCode, err_msg = UserValidation.validateUsername(username)
         if errorCode != 0:
             return errorCode, err_msg
 

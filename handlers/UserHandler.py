@@ -46,3 +46,30 @@ class UserHandler:
         db.session.commit()
 
         return authCode
+
+    @staticmethod
+    def comparePasswords(passwordObj, passwordInput):
+        salt, passHash = passwordObj.split("$")
+
+        attemptHash = UserHandler.generateHash(salt + passwordInput)
+        return secrets.compare_digest(passHash, attemptHash)
+
+    @staticmethod
+    def loginUser(username, password):
+        # check if username exists
+        userObj = db.session.query(User).filter_by(username=username).first()
+        if userObj is None:
+            return 1, "Incorrect Username or Password"
+        # get password with salt from db and check if given password matches stored password
+        passwordObj = userObj.password
+        if not UserHandler.comparePasswords(passwordObj, password):
+            return 1, "Incorrect Username or Password"
+
+        # set new authCode for user
+        authCode = UserHandler.generateRandomCharacters(128)
+        authHash = UserHandler.generateHash(authCode)
+        userObj.sessionToken = authHash
+        db.session.commit()
+
+        # return authcode and user adminType
+        return 0, {"authCode": authCode, "adminType": userObj.adminType}
