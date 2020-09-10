@@ -1,5 +1,5 @@
 
-from flask_restplus import Resource, reqparse, Namespace, fields
+from flask_restx import Resource, reqparse, Namespace, fields
 from validation.UserValidation import UserValidation
 from handlers.UserHandler import UserHandler
 from util.HTTPResponse import HTTPResponse

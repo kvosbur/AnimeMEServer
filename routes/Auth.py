@@ -1,7 +1,7 @@
 
 from functools import wraps
 from model.User import User
-from flask_restplus import reqparse, Namespace
+from flask_restx import reqparse, Namespace
 from handlers.UserHandler import UserHandler
 
 auth = Namespace('auth', description='User info page')
