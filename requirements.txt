@@ -11,3 +11,4 @@ Click==7.0
 Flask-Testing==0.7.1
 parameterized==0.7.0
 pytest-cov==2.8.1
+validators

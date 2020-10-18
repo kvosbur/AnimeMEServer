@@ -7,3 +7,7 @@ class HTTPResponse:
         return {"message": message,
                 "statusCode": statusCode,
                 "data": data}, responseCode
+
+    @staticmethod
+    def makeResponseMinimal(responseCode, message):
+        return {"message": message}, responseCode
