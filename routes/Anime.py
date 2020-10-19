@@ -23,8 +23,8 @@ class AnimeDetail(Resource):
     @anime.response(200, "Anime was created successfully", animeCreationResponse)
     @anime.response(400, "Input Validation", animeCreationResponse)
     @auth_required
-    def post(self):
-        arguments = self.parser.parse_args()
+    def post(self, userObj):
+        arguments = self.createParser.parse_args()
         nameEn = arguments["animeNameEN"]
         nameJp = arguments["animeNameJP"]
         releaseDate = arguments["releaseDate"]

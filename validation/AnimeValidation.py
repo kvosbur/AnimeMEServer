@@ -27,7 +27,7 @@ class AnimeValidation:
             return "Url for image must be in valid format"
 
         try:
-            datetime.strptime('%m/%d/%Y', releaseDate)
+            datetime.strptime(releaseDate, '%m/%d/%Y')
             return None
-        except ValueError:
+        except ValueError as e:
             return "Date must be correctly formatted as mm/dd/yyyy"

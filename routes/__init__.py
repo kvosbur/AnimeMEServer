@@ -1,6 +1,7 @@
 from flask_restx import Api
 
 from .User import user
+from .Anime import anime
 
 api = Api(
     title='AnimeMe Documentation',
@@ -9,3 +10,4 @@ api = Api(
 )
 
 api.add_namespace(user)
+api.add_namespace(anime)
