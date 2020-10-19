@@ -19,10 +19,10 @@ class AnimeDetail(Resource):
     createParser.add_argument('releaseDate', type=str, location='form', required=True)
     createParser.add_argument('animeImage', type=str, location='form', required=True)
 
+    @auth_required
     @anime.expect(createParser)
     @anime.response(200, "Anime was created successfully", animeCreationResponse)
     @anime.response(400, "Input Validation", animeCreationResponse)
-    @auth_required
     def post(self, userObj):
         arguments = self.createParser.parse_args()
         nameEn = arguments["animeNameEN"]

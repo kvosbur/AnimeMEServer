@@ -32,7 +32,7 @@ from model import Song
 from model import User
 
 
-@app.cli.command()
+@app.cli.command('test')
 @click.argument('testname', required=False)
 def test(testname):
     if testname is None:
