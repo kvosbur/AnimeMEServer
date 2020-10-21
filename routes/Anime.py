@@ -38,3 +38,21 @@ class AnimeDetail(Resource):
         AnimeHandler.addAnime(nameEn, nameJp, releaseDate, imageUrl)
 
         return HTTPResponse.makeResponseMinimal(200, "OK")
+
+
+@anime.route("/feed")
+class AnimeFeed(Resource):
+    createParser = reqparse.RequestParser()
+    createParser.add_argument('animeNameEN', type=str, location='args', required=False)
+    createParser.add_argument('animeNameJP', type=str, location='args', required=False)
+
+    @anime.expect(createParser)
+    @anime.response(200, "Anime was created successfully", animeCreationResponse)
+    @anime.response(400, "Input Validation", animeCreationResponse)
+    @auth_required
+    def get(self, userObj):
+        arguments = self.createParser.parse_args()
+        nameEn = arguments.get("animeNameEN") or ""
+        nameJp = arguments.get("animeNameJP") or ""
+
+        return {"data": AnimeHandler.feedAnime(nameEn, nameJp)}, 200

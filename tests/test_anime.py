@@ -1,6 +1,7 @@
 from .base import BaseTestCase, db
 from model.User import User
 from model.Anime import Anime
+from model.Song import Song
 import datetime
 from parameterized import parameterized
 
@@ -19,11 +20,34 @@ class AnimeBaseTestCase(BaseTestCase):
         db.session.add(userObj)
 
         # add one anime into the database for validation checks
-        animeObj = Anime(animeNameEN="english",
+        self.animeObj = Anime(animeNameEN="english",
               animeNameJP="japanese",
               releasedDate=datetime.datetime.now(),
               imageURL="google.com")
-        db.session.add(animeObj)
+        self.animeObj1 = Anime(animeNameEN="other",
+                         animeNameJP="rawr",
+                         releasedDate=datetime.datetime.now(),
+                         imageURL="google.com1")
+        db.session.add(self.animeObj)
+        db.session.add(self.animeObj1)
+        db.session.commit()
+
+        songObj1 = Song(songNameEN="english",
+                       songNameJP="japanese",
+                       songArtist="artist",
+                       songType=0,
+                       songTypeValue=6,
+                       animeID=self.animeObj.animeID)
+
+        songObj2 = Song(songNameEN="english1",
+                        songNameJP="japanese1",
+                        songArtist="artist1",
+                        songType=0,
+                        songTypeValue=6,
+                        animeID=self.animeObj.animeID)
+
+        db.session.add(songObj1)
+        db.session.add(songObj2)
 
         db.session.commit()
 
@@ -49,8 +73,9 @@ class TestAnimeDetailPost(AnimeBaseTestCase):
             )
 
             assert response.status_code == 400
-            assert response.json == {'errors': {'authCode': 'Missing required parameter in the HTTP headers'},
-                                        'message': 'Input payload validation failed'}
+            assert response.json == {
+                'errors': {'authCode': 'Missing required parameter in the HTTP headers'},
+                'message': 'Input payload validation failed'}
 
     def test_empty_anime_names(self):
         payload = {"animeNameEN": "",
@@ -146,6 +171,45 @@ class TestAnimeDetailPost(AnimeBaseTestCase):
             assert animeObj.animeNameJP == japaneseName
             assert animeObj.releasedDate == datetime.date(year=2005, month=1, day=1)
             assert animeObj.imageURL == imageUrl
+
+
+class TestAnimeFeedGet(AnimeBaseTestCase):
+
+    def test_no_name_given(self):
+        headers = {"authCode": USEAUTHCODE}
+
+        with self.client:
+            response = self.client.get(
+                "anime/feed",
+                headers=headers,
+            )
+
+            assert response.status_code == 200
+            assert response.json == {"data": [self.animeObj.to_json(), self.animeObj1.to_json()]}
+
+    def test_english_name_given(self):
+        headers = {"authCode": USEAUTHCODE}
+
+        with self.client:
+            response = self.client.get(
+                "anime/feed?animeNameEN=english",
+                headers=headers,
+            )
+
+            assert response.status_code == 200
+            assert response.json == {"data": [self.animeObj.to_json()]}
+
+    def test_japanese_name_given(self):
+        headers = {"authCode": USEAUTHCODE}
+
+        with self.client:
+            response = self.client.get(
+                "anime/feed?animeNameJP=ra",
+                headers=headers,
+            )
+
+            assert response.status_code == 200
+            assert response.json == {"data": [self.animeObj1.to_json()]}
 
 
 
