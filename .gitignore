@@ -133,3 +133,5 @@ migrations/
 
 # ignore pychar .idea folder
 .idea/
+
+files/
