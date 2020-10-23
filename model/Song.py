@@ -11,4 +11,4 @@ class Song(db.Model):
     songArtist = db.Column(db.String(200), nullable=False)
     songType = db.Column(db.Integer, nullable=False)
     songTypeValue = db.Column(db.Integer, nullable=True)
-    animeID = db.Column(db.Integer, db.ForeignKey('anime.animeID'))
+    seasonId = db.Column(db.Integer, db.ForeignKey('season.seasonId'))

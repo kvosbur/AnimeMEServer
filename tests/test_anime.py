@@ -2,6 +2,7 @@ from .base import BaseTestCase, db
 from model.User import User
 from model.Anime import Anime
 from model.Song import Song
+from model.AnimeSeason import Season
 import datetime
 from parameterized import parameterized
 
@@ -11,7 +12,7 @@ USEAUTHCODE = "ROAMGdIz6K8zRiWYMQFZyxfMd4u96dqobs5eiAF1DuYTnANEfNJnu5vuvGGzN2aCe
 class AnimeBaseTestCase(BaseTestCase):
     def setUp(self):
         db.create_all()
-        # create user object to use for testing
+
         userObj = User(email="a@a.com",
                        username="AwesomeSauce",
                        sessionToken="69f6f1e7eddcb33b790474e010e7476ee15a7950527b50271f9892fcc7100a99ec752826363893be2c7e43b4b5935e1965d09178bacf10e1fbbd317a6aa86b6d",
@@ -19,35 +20,36 @@ class AnimeBaseTestCase(BaseTestCase):
                        adminType=0)
         db.session.add(userObj)
 
-        # add one anime into the database for validation checks
         self.animeObj = Anime(animeNameEN="",
               animeNameJP="japanese",
               releasedDate=datetime.datetime.now(),
               imageURL="google.com")
+
         self.animeObj1 = Anime(animeNameEN="english",
                          animeNameJP="",
                          releasedDate=datetime.datetime.now(),
                          imageURL="google.com1")
         db.session.add(self.animeObj)
         db.session.add(self.animeObj1)
-        db.session.commit()
+
+        seasonObj = Season(seasonNumber=1)
+
+        self.animeObj1.seasons = [seasonObj]
+
 
         songObj1 = Song(songNameEN="english",
                        songNameJP="japanese",
                        songArtist="artist",
                        songType=0,
-                       songTypeValue=6,
-                       animeID=self.animeObj1.animeID)
+                       songTypeValue=6)
 
         songObj2 = Song(songNameEN="english1",
                         songNameJP="japanese1",
                         songArtist="artist1",
                         songType=0,
-                        songTypeValue=6,
-                        animeID=self.animeObj1.animeID)
+                        songTypeValue=6)
 
-        db.session.add(songObj1)
-        db.session.add(songObj2)
+        seasonObj.songs = [songObj1, songObj2]
 
         db.session.commit()
 
@@ -171,6 +173,9 @@ class TestAnimeDetailPost(AnimeBaseTestCase):
             assert animeObj.animeNameJP == japaneseName
             assert animeObj.releasedDate == datetime.date(year=2005, month=1, day=1)
             assert animeObj.imageURL == imageUrl
+            assert len(animeObj.seasons) == 1
+            assert animeObj.seasons[0].seasonNumber == 1
+            assert animeObj.seasons[0].imageURL == imageUrl
 
 
 class TestAnimeFeedGet(AnimeBaseTestCase):

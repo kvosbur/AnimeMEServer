@@ -10,13 +10,14 @@ class Anime(db.Model):
     animeNameJP = db.Column(db.String(200), nullable=False)
     releasedDate = db.Column(db.Date(), nullable=False)
     imageURL = db.Column(db.String(255), nullable=True)
-    songs = db.relationship("Song", backref="anime", cascade="all, delete-orphan")
+
+    seasons = db.relationship("Season", backref="anime", cascade="all, delete-orphan")
 
     def to_json(self):
         return {
             "id": self.animeID,
             "nameEnglish": self.animeNameEN,
             "nameJapanese": self.animeNameJP,
-            "songCount": len(self.songs),
+            "songCount": sum([len(season.songs) for season in self.seasons]),
             "image": self.imageURL
         }

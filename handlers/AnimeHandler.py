@@ -1,5 +1,6 @@
 from model import db
 from model.Anime import Anime
+from model.AnimeSeason import Season
 import datetime
 
 
@@ -14,8 +15,14 @@ class AnimeHandler:
               releasedDate=dateObj,
               imageURL=animeImageUrl)
 
+        seasonObj = Season(seasonNumber=1, imageURL=animeImageUrl)
+
+        animeObj.seasons = [seasonObj]
+
         db.session.add(animeObj)
         db.session.commit()
+
+
         return animeObj.animeID
 
     @staticmethod
