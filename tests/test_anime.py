@@ -20,12 +20,12 @@ class AnimeBaseTestCase(BaseTestCase):
         db.session.add(userObj)
 
         # add one anime into the database for validation checks
-        self.animeObj = Anime(animeNameEN="english",
+        self.animeObj = Anime(animeNameEN="",
               animeNameJP="japanese",
               releasedDate=datetime.datetime.now(),
               imageURL="google.com")
-        self.animeObj1 = Anime(animeNameEN="other",
-                         animeNameJP="rawr",
+        self.animeObj1 = Anime(animeNameEN="english",
+                         animeNameJP="",
                          releasedDate=datetime.datetime.now(),
                          imageURL="google.com1")
         db.session.add(self.animeObj)
@@ -37,14 +37,14 @@ class AnimeBaseTestCase(BaseTestCase):
                        songArtist="artist",
                        songType=0,
                        songTypeValue=6,
-                       animeID=self.animeObj.animeID)
+                       animeID=self.animeObj1.animeID)
 
         songObj2 = Song(songNameEN="english1",
                         songNameJP="japanese1",
                         songArtist="artist1",
                         songType=0,
                         songTypeValue=6,
-                        animeID=self.animeObj.animeID)
+                        animeID=self.animeObj1.animeID)
 
         db.session.add(songObj1)
         db.session.add(songObj2)
@@ -147,7 +147,7 @@ class TestAnimeDetailPost(AnimeBaseTestCase):
 
     def test_anime_valid(self):
         englishName = 'otherEnglish'
-        japaneseName = 'otherJapanese'
+        japaneseName = ''
         releasedDate = '01/01/2005'
         imageUrl = 'https://google.com'
         payload = {"animeNameEN": englishName,
@@ -197,19 +197,19 @@ class TestAnimeFeedGet(AnimeBaseTestCase):
             )
 
             assert response.status_code == 200
-            assert response.json == {"data": [self.animeObj.to_json()]}
+            assert response.json == {"data": [self.animeObj1.to_json()]}
 
     def test_japanese_name_given(self):
         headers = {"authCode": USEAUTHCODE}
 
         with self.client:
             response = self.client.get(
-                "anime/feed?animeNameJP=ra",
+                "anime/feed?animeNameJP=nes",
                 headers=headers,
             )
 
             assert response.status_code == 200
-            assert response.json == {"data": [self.animeObj1.to_json()]}
+            assert response.json == {"data": [self.animeObj.to_json()]}
 
 
 

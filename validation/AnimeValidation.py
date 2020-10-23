@@ -2,7 +2,7 @@ import validators
 from datetime import datetime
 from model import db
 from model.Anime import Anime
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 
 class AnimeValidation:
@@ -11,7 +11,8 @@ class AnimeValidation:
     def validateAnimeUniqueness(animeNameEn, animeNameJp):
         """Validates whether this is the first time the email is being used or not"""
         isFound = db.session.query(Anime).filter(
-            or_(Anime.animeNameJP == animeNameJp, Anime.animeNameEN == animeNameEn)).first()
+            or_(and_(Anime.animeNameJP == animeNameJp, Anime.animeNameJP != ""),
+                and_(Anime.animeNameEN == animeNameEn, Anime.animeNameEN != ""))).first()
         if isFound is not None:
             return 1
         return None
