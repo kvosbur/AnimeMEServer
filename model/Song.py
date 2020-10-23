@@ -12,3 +12,13 @@ class Song(db.Model):
     songType = db.Column(db.Integer, nullable=False)
     songTypeValue = db.Column(db.Integer, nullable=True)
     seasonId = db.Column(db.Integer, db.ForeignKey('season.seasonId'))
+
+    def to_json(self):
+        return {
+            "songId": self.songID,
+            "songNameEn": self.songNameEN,
+            "songNameJp": self.songNameJP,
+            "songArtist": self.songArtist,
+            "songType": self.songType,
+            "songTypeValue": self.songTypeValue
+        }

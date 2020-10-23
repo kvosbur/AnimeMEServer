@@ -31,3 +31,9 @@ class AnimeHandler:
                                                 Anime.animeNameJP.like("%" + animeNameJp + "%")).all()
 
         return [model.to_json() for model in models]
+
+    @staticmethod
+    def detailAnime(animeId):
+        model = db.session.query(Anime).filter_by(animeID=animeId).first()
+
+        return model

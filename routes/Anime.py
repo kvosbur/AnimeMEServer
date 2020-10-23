@@ -10,6 +10,8 @@ anime = Namespace('anime', description='Anime Information')
 
 animeCreationResponse = anime.model("AnimeCreationResponse", {"message": fields.String(example="OK")})
 
+animeResponseModel = anime.model("AnimeCreationResponse", {"data": fields.String(example="Anime details")})
+
 
 @anime.route("/detail")
 class AnimeDetail(Resource):
@@ -38,6 +40,23 @@ class AnimeDetail(Resource):
         AnimeHandler.addAnime(nameEn, nameJp, releaseDate, imageUrl)
 
         return HTTPResponse.makeResponseMinimal(200, "OK")
+
+    getParser = reqparse.RequestParser()
+    getParser.add_argument('animeId', type=int, location='args', required=True)
+
+    @anime.expect(getParser)
+    @anime.response(200, "Anime was retrieved successfully", animeResponseModel)
+    @anime.response(400, "Input Validation", animeCreationResponse)
+    @auth_required
+    def get(self, userObj):
+        arguments = self.getParser.parse_args()
+        animeId = arguments.get("animeId") or ""
+
+        details = AnimeHandler.detailAnime(animeId)
+        formattedDetails = {}
+        if details is not None:
+            formattedDetails = details.to_detailed_json()
+        return {"data": formattedDetails}, 200
 
 
 @anime.route("/feed")

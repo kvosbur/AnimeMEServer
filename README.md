@@ -6,3 +6,8 @@ explanation https://flask-restplus.readthedocs.io/en/stable/swagger.html
 
 To run locally for testing it is best to use "flask run --host=0.0.0.0" so 
 you can access it on local network.
+
+process for migration is:
+flask db init
+flask db migrate -m "message"
+flask db upgrade

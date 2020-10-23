@@ -21,3 +21,12 @@ class Anime(db.Model):
             "songCount": sum([len(season.songs) for season in self.seasons]),
             "image": self.imageURL
         }
+
+    def to_detailed_json(self):
+        return {
+            "id": self.animeID,
+            "nameEnglish": self.animeNameEN,
+            "nameJapanese": self.animeNameJP,
+            "image": self.imageURL,
+            "seasons": [season.to_json() for season in self.seasons]
+        }

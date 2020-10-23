@@ -217,5 +217,47 @@ class TestAnimeFeedGet(AnimeBaseTestCase):
             assert response.json == {"data": [self.animeObj.to_json()]}
 
 
+class TestAnimeDetaildGet(AnimeBaseTestCase):
+
+    def test_no_id_given(self):
+        headers = {"authCode": USEAUTHCODE}
+
+        with self.client:
+            response = self.client.get(
+                "anime/detail",
+                headers=headers,
+            )
+
+            assert response.status_code == 400
+            assert response.json == {'errors': {'animeId': 'Missing required parameter in the query string'},
+                                     'message': 'Input payload validation failed'}
+
+    def test_id_has_no_match(self):
+        headers = {"authCode": USEAUTHCODE}
+
+        with self.client:
+            response = self.client.get(
+                "anime/detail?animeId=-1",
+                headers=headers,
+            )
+
+            assert response.status_code == 200
+            assert response.json == {'data': {}}
+
+    def test_valid_id(self):
+        headers = {"authCode": USEAUTHCODE}
+
+        with self.client:
+            response = self.client.get(
+                "anime/detail?animeId=" + str(self.animeObj1.animeID),
+                headers=headers,
+            )
+
+            assert response.status_code == 200
+            assert response.json['data']['id'] == self.animeObj1.animeID
+            assert len(response.json['data']['seasons']) == len(self.animeObj1.seasons)
+            assert len(response.json['data']['seasons'][0]['songs']) == len(self.animeObj1.seasons[0].songs)
+
+
 
 

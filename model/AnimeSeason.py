@@ -18,4 +18,5 @@ class Season(db.Model):
             "seasonNumber": self.seasonNumber,
             "seasonName": self.seasonName,
             "image": self.imageURL,
+            "songs": [song.to_json() for song in self.songs]
         }
