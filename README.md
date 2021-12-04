@@ -11,3 +11,7 @@ process for migration is:
 flask db init
 flask db migrate -m "message"
 flask db upgrade
+
+
+
+https://dassum.medium.com/python-rest-apis-with-flask-connexion-and-sqlalchemy-3c8c3292d9ce

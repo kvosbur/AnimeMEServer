@@ -1,0 +1,89 @@
+openapi: "3.0.0"
+info:
+  title: AnimeMe Server
+  description: Description to add later
+  version: 0.0.0
+tags:
+  - user
+
+paths:
+  /user/authentication:
+    post:
+      tags:
+        - user
+      summary: Authenticate the given user given username / password
+      requestBody:
+        content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  username:
+                    type: string 
+                  password:
+                    type: string 
+      responses:
+        '200':
+          description: Authentication response with tokens
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  accessToken:
+                    $ref: '#/components/schemas/accessToken'
+                  adminType:
+                    $ref: '#/components/schemas/adminType'
+                  refreshToken:
+                    $ref: '#/components/schemas/refreshToken'
+
+  /user/register:
+    post:
+      tags:
+        - user 
+      summary: Register a new user account
+      requestBody:
+        content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  email:
+                    type: string
+                    format: email
+                    description: Currently not used for anything....
+                  username:
+                    type: string 
+                  password:
+                    type: string 
+      responses:
+        '200':
+          description: Successfully created account
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  accessToken:
+                    $ref: '#/components/schemas/accessToken'
+                  adminType:
+                    $ref: '#/components/schemas/adminType'
+                  refreshToken:
+                    $ref: '#/components/schemas/refreshToken'
+
+components:
+  schemas:
+    accessToken:
+      type: string
+      format: uuid
+      description: token to be used for further authentication. 5 min exipration time
+      example: 500bf1ec-250b-443a-ab06-fee32656ecf4
+    adminType:
+      type: string
+      enum: [user, admin]
+      description: Privelege of user
+    refreshToken:
+      type: string
+      format: uuid
+      description: token to be used to refresh auth. 1 day expiration
+      example: e5a85fcd-2652-433c-929b-01d301db135d

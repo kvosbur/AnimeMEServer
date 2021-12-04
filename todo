@@ -1,0 +1,4 @@
+Add openapi specification
+create plantuml document describing database  (https://forum.plantuml.net/331/database-modeling)
+Setup dev container for development/production
+setup plantuml creator based on current mysql database
